@@ -275,7 +275,7 @@ Resources:
   EcrRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: actionbotui
+      RepositoryName: !Ref ECRRepoName
   SampleCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -292,7 +292,7 @@ Resources:
       HealthCheckGracePeriodSeconds: 30
       LaunchType: FARGATE
       LoadBalancers:
-        - ContainerName: actionbotui
+        - ContainerName: !Ref ECRRepoName
           ContainerPort: 80
           TargetGroupArn: !Ref TargetGroup
       NetworkConfiguration:
@@ -326,7 +326,7 @@ Resources:
               - accountId: AWS::AccountId
                 region: AWS::Region
                 repoName: !Ref ECRRepoName
-          Name: actionbotui
+          Name: !Ref ECRRepoName
           Memory: 512
           PortMappings:
             - ContainerPort: 80
