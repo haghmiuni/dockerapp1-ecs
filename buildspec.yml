@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - CONTAINER_NAME="YOUR_CONTAINER_NAME"
+      - TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)
+  build:
+    commands:
+      - ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
+      - docker build -t $CONTAINER_NAME:latest .
+      - docker tag $CONTAINER_NAME:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_NAME:$TAG
+  post_build:
+    commands:
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_NAME:$TAG
+      - printf '[{"name":"%s","imageUri":"%s:%s"}]' $CONTAINER_NAME $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CONTAINER_NAME $TAG > build.json
+artifacts:
+  files:
+    - build.json
+  discard-paths: yes

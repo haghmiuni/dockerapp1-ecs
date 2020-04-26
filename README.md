@@ -1,1 +1,0 @@
-# dockerapp1-ecs
