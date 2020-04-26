@@ -3,7 +3,7 @@ phases:
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      - CONTAINER_NAME="YOUR_CONTAINER_NAME"
+      - CONTAINER_NAME=phpapp
       - TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)
   build:
     commands:
